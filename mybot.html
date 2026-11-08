@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saffron | Tamarind Table's AI Dining Assistant</title>
+  <meta name="description" content="Saffron is a Botpress AI assistant for Tamarind Table, a Hyderabadi kitchen in Tampa. Ask it about the menu, diets, spice levels, hours, catering and house policies.">
+  <meta name="theme-color" content="#0f100e">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e3a540'/%3E%3Cpath d='M32 14c9 6 12 14 9 23-2 6-6 10-9 13-3-3-7-7-9-13-3-9 0-17 9-23z' fill='%2317130a'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Outfit:wght@300;400;500&display=swap">
+  <style>
+    /* Same design tokens as the Assignment 1 site (Tamarind Table): dark dining room, one saffron accent. */
+    :root {
+      --bg: #0f100e; --surface: #171815; --surface-2: #1e1f1b;
+      --ink: #eeece6; --muted: #a6a39a; --line: rgba(238, 236, 230, .1);
+      --accent: #e3a540; --accent-hover: #f0b95c; --on-accent: #17130a;
+      --veg: #9cc58a; --radius: 14px;
+      --serif: "Cormorant Garamond", "Times New Roman", serif;
+      --sans: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 300 17px/1.65 var(--sans); -webkit-font-smoothing: antialiased; }
+    img { max-width: 100%; display: block; }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:hover { color: var(--accent-hover); }
+    b, strong { font-weight: 500; }
+    h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.08; margin: 0 0 .45em; letter-spacing: -.01em; }
+    h1 { font-size: clamp(2.8rem, 7vw, 5rem); }
+    h2 { font-size: clamp(2rem, 4vw, 3rem); }
+    h3 { font-size: 1.45rem; }
+    h1 em, h2 em { font-style: italic; color: var(--accent); }
+    p { margin: 0 0 1em; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+    .section { padding: 88px 0; border-top: 1px solid var(--line); }
+    .eyebrow { text-transform: uppercase; letter-spacing: .2em; font-size: .74rem; font-weight: 500; color: var(--accent); margin-bottom: 1rem; }
+    .lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+    .muted { color: var(--muted); }
+    .skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--on-accent); padding: 8px 14px; border-radius: 999px; z-index: 100; }
+    .skip:focus { left: 8px; }
+
+    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(15, 16, 14, .8); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font: 500 1.45rem var(--serif); }
+    .brand:hover { color: var(--ink); }
+    .nav ul { list-style: none; display: flex; gap: 2px; margin: 0; padding: 0; }
+    .nav ul a { display: block; padding: 8px 14px; border-radius: 999px; color: var(--muted); text-decoration: none; font-size: .95rem; }
+    .nav ul a:hover { color: var(--ink); background: rgba(255, 255, 255, .05); }
+    @media (max-width: 760px) { .nav ul { display: none; } }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 999px; border: 1px solid transparent; font: 500 .98rem var(--sans); text-decoration: none; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: var(--accent-hover); color: var(--on-accent); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--ink); }
+
+    .hero { position: relative; min-height: min(84vh, 760px); display: grid; align-items: end; overflow: hidden; }
+    .hero-media { position: absolute; inset: 0; }
+    .hero-media img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,16,14,.45) 0%, rgba(15,16,14,.7) 45%, var(--bg) 100%); }
+    .hero .wrap { position: relative; padding: 140px 0 72px; }
+    .hero h1 { max-width: 14ch; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: .85rem; color: var(--muted); background: rgba(15,16,14,.5); margin-bottom: 18px; }
+    .badge i { width: 8px; height: 8px; border-radius: 50%; background: var(--veg); box-shadow: 0 0 0 4px rgba(156,197,138,.18); }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+    .card h3 { margin-bottom: .3em; }
+    .card p { color: var(--muted); margin: 0; }
+    .num { font: 500 2.4rem var(--serif); color: var(--accent); line-height: 1; margin-bottom: 10px; font-variant-numeric: lining-nums; }
+
+    .questions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 32px; }
+    .q { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; color: var(--ink); font: 400 1rem var(--sans); cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; transition: border-color .2s, background .2s; }
+    .q:hover { border-color: var(--accent); background: var(--surface-2); }
+    .q span { color: var(--accent); font-size: .82rem; white-space: nowrap; }
+
+    .menu-wrap { overflow-x: auto; margin-top: 28px; border: 1px solid var(--line); border-radius: var(--radius); }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-weight: 500; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; background: var(--surface); }
+    tbody tr:last-child td { border-bottom: 0; }
+    td.price { color: var(--accent); font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+    td.cat { color: var(--muted); }
+    .desc { display: block; color: var(--muted); font-size: .88rem; }
+    .tag { display: inline-block; font-size: .74rem; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); margin: 2px 4px 2px 0; white-space: nowrap; }
+    .tag.v { color: var(--veg); border-color: rgba(156,197,138,.35); }
+    .tag.gf { color: #9fc3d9; border-color: rgba(159,195,217,.35); }
+    .tag.off { color: #ef8a6f; border-color: rgba(239,138,111,.4); }
+
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 32px; }
+    .hours td { padding: 9px 0; }
+    .hours td:last-child { text-align: right; color: var(--muted); }
+    .hours tr.today td { color: var(--accent); }
+    dl { margin: 0; }
+    dt { font-weight: 500; margin-top: 14px; }
+    dt:first-child { margin-top: 0; }
+    dd { margin: 2px 0 0; color: var(--muted); }
+
+    .steps { counter-reset: s; list-style: none; padding: 0; margin: 32px 0 0; display: grid; gap: 14px; }
+    .steps li { counter-increment: s; position: relative; padding: 20px 22px 20px 72px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--muted); }
+    .steps li::before { content: counter(s); position: absolute; left: 22px; top: 16px; font: 500 2rem var(--serif); color: var(--accent); }
+    .steps b { color: var(--ink); }
+
+    .site-footer { border-top: 1px solid var(--line); padding: 32px 0 120px; color: var(--muted); font-size: .9rem; }
+    .site-footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; font-size: .9rem; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 60; }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 900px) {
+      .grid-3, .two, .questions { grid-template-columns: 1fr; }
+      .section { padding: 64px 0; }
+    }
+    @media (max-width: 640px) {
+      td.cat, th.cat { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#top"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#e3a540"/><path d="M32 14c9 6 12 14 9 23-2 6-6 10-9 13-3-3-7-7-9-13-3-9 0-17 9-23z" fill="#17130a"/><path d="M32 18v30" stroke="#e3a540" stroke-width="2.5" stroke-linecap="round"/></svg>Saffron</a>
+      <nav aria-label="Sections">
+        <ul>
+          <li><a href="#ask">Ask Saffron</a></li>
+          <li><a href="#knowledge">What it knows</a></li>
+          <li><a href="#how">How it works</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=1800&q=70"
+             srcset="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=900&q=70 900w,
+                     https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=1800&q=70 1800w"
+             sizes="100vw" alt="Chicken dum biryani in a white bowl" fetchpriority="high">
+      </div>
+      <div class="wrap">
+        <p class="badge"><i></i>Botpress AI bot, live on this page</p>
+        <p class="eyebrow">Tamarind Table, Tampa</p>
+        <h1>Meet <em>Saffron</em>, your dining assistant.</h1>
+        <p class="lead">Saffron is an AI chatbot for Tamarind Table, a Hyderabadi kitchen in Seminole Heights. It answers guest questions about the menu, prices, diets, spice levels, hours, catering and house policies, using the restaurant's own knowledge base, any time of day.</p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-open-chat>Chat with Saffron</button>
+          <a class="btn btn-ghost" href="#knowledge">See what it knows</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="purpose">
+      <div class="wrap">
+        <p class="eyebrow">Why this bot exists</p>
+        <h2>The same five questions, <em>every night.</em></h2>
+        <p class="lead">Is the biryani spicy? Is it gluten-free? Are you open Monday? Can I book for eight? Do you cater? A small restaurant answers these by phone during the dinner rush. Saffron answers them instantly, from one source of truth, so staff can stay with the guests in the room.</p>
+        <div class="grid-3">
+          <div class="card"><div class="num">18</div><h3>Dishes</h3><p>Every dish with price, description, spice level and diet flags.</p></div>
+          <div class="card"><div class="num">4</div><h3>Diet filters</h3><p>Vegetarian, vegan, gluten-free and halal, plus nut and dairy notes.</p></div>
+          <div class="card"><div class="num">24/7</div><h3>Answers</h3><p>Hours, reservations, takeout, catering trays, parking and kids' menu.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ask">
+      <div class="wrap">
+        <p class="eyebrow">Try it</p>
+        <h2>Ask Saffron <em>anything</em> about dinner.</h2>
+        <p class="lead">Click a question to send it to the bot, or open the chat bubble in the corner and type your own.</p>
+        <div class="questions">
+          <button class="q" type="button">What vegan dishes do you have?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">How spicy is the chicken biryani, and can you make it milder?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">Are you open on Monday?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">I'm gluten-free. What can I order?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">How much is a biryani catering tray for 20 people?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">Is the Mango Kulfi available right now?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">Which dishes contain nuts?<span>Ask &rarr;</span></button>
+          <button class="q" type="button">Can I book a table for 8 people on Friday?<span>Ask &rarr;</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="knowledge">
+      <div class="wrap">
+        <p class="eyebrow">The knowledge base</p>
+        <h2>What Saffron <em>knows</em></h2>
+        <p class="lead">Saffron answers only from this data. It is the same menu used on the Tamarind Table website from Assignment 1, plus a house policies document uploaded to the bot's Botpress knowledge base.</p>
+
+        <div class="menu-wrap">
+          <table>
+            <caption class="muted" style="caption-side:bottom;padding:12px 16px;text-align:left;font-size:.85rem">Spice scale: None, Mild, Medium, Hot. Curries and biryani can be made milder or hotter on request.</caption>
+            <thead><tr><th>Dish</th><th class="cat">Category</th><th>Price</th><th>Spice</th><th>Diet</th></tr></thead>
+            <tbody id="menu-body"></tbody>
+          </table>
+        </div>
+
+        <div class="two">
+          <div class="card">
+            <h3>Hours</h3>
+            <table class="hours">
+              <tr data-day="1"><td>Monday</td><td>Closed</td></tr>
+              <tr data-day="2"><td>Tuesday</td><td>11:30 AM to 9:30 PM</td></tr>
+              <tr data-day="3"><td>Wednesday</td><td>11:30 AM to 9:30 PM</td></tr>
+              <tr data-day="4"><td>Thursday</td><td>11:30 AM to 9:30 PM</td></tr>
+              <tr data-day="5"><td>Friday</td><td>11:30 AM to 10:30 PM</td></tr>
+              <tr data-day="6"><td>Saturday</td><td>12:00 PM to 10:30 PM</td></tr>
+              <tr data-day="0"><td>Sunday</td><td>12:00 PM to 9:00 PM</td></tr>
+            </table>
+            <p class="muted" style="margin:14px 0 0;font-size:.92rem">Kitchen takes last orders 30 minutes before close. Lunch special Tuesday to Friday, 11:30 AM to 3:00 PM.</p>
+          </div>
+          <div class="card">
+            <h3>House policies</h3>
+            <dl>
+              <dt>Reservations</dt><dd>Walk-ins welcome. Parties of 6 or more call ahead at (813) 555-0142. 40 seats.</dd>
+              <dt>Takeout and delivery</dt><dd>Pickup orders by phone. Delivery within 5 miles through the major delivery apps.</dd>
+              <dt>Catering</dt><dd>Biryani trays: half tray $65 (serves 8 to 10), full tray $120 (serves 18 to 20). 48 hours' notice.</dd>
+              <dt>Dietary</dt><dd>All chicken and goat is halal. Butter Chicken and Lamb Rogan Josh sauces contain cashew. Shared kitchen with nuts, gluten and dairy.</dd>
+              <dt>Lunch special</dt><dd>Any biryani with a Mango Lassi or Masala Chai for $15.</dd>
+              <dt>Kids</dt><dd>Kids' plate (Butter Chicken or Chana Masala, rice, naan) $10 for 10 and under.</dd>
+              <dt>Parking</dt><dd>Free lot behind the building, plus street parking.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2>Built with <em>Botpress</em></h2>
+        <ol class="steps">
+          <li><b>Knowledge base.</b> The menu, hours and house policies were written up as one document and uploaded to the bot's Botpress knowledge base, so every answer is grounded in the restaurant's real data instead of the model's guesses.</li>
+          <li><b>Instructions.</b> The bot has a short persona: warm, brief, answers only about Tamarind Table, never makes up a price or a dish, and sends guests to the phone line for reservations and allergy questions it cannot confirm.</li>
+          <li><b>Tested in the Studio emulator.</b> Questions about diets, spice, hours, catering and unavailable items were checked against the knowledge base before publishing.</li>
+          <li><b>Published and embedded.</b> Botpress Webchat is loaded with two script tags at the bottom of this page. The page itself is plain HTML and CSS built in VS Code and hosted on GitHub Pages.</li>
+        </ol>
+        <p class="muted" style="margin-top:28px">Want the full restaurant site? Visit <a href="https://harshithgujjeti.com/tamarind-table/" rel="noopener">Tamarind Table</a> (ISM 6225 Assignment 1).</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>ISM 6225 Assignment 2. Tamarind Table is a fictional restaurant; all data is sample data. Photo from <a href="https://unsplash.com" rel="noopener">Unsplash</a>.</span>
+      <span>Built by <a href="https://github.com/Harshxth" rel="noopener">Harshith Gujjeti</a></span>
+    </div>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // Menu data: same items as the Assignment 1 site (js/main.js SEED_MENU), rendered into the table above.
+    const MENU = [
+      ['Samosa Chaat', 'Starters', 9, 1, 'v', 'Crushed potato samosa, chickpea curry, tamarind and mint chutneys.'],
+      ['Gobi Manchurian', 'Starters', 11, 2, 'vegan', 'Crispy cauliflower in a garlic, chili and soy glaze.'],
+      ['Chicken 65', 'Starters', 13, 3, 'gf', 'Hyderabadi fried chicken with curry leaves and red chili.'],
+      ['Paneer Tikka', 'Starters', 14, 1, 'v gf', 'Tandoor charred cottage cheese, peppers, onion.'],
+      ['Butter Chicken', 'Mains', 19, 1, 'gf', 'Smoked tandoori chicken in tomato and butter sauce. Contains cashew.'],
+      ['Lamb Rogan Josh', 'Mains', 24, 2, 'gf', 'Slow braised lamb, Kashmiri chili, fennel. Contains cashew.'],
+      ['Chana Masala', 'Mains', 15, 1, 'vegan gf', 'Chickpeas with onion, tomato and toasted spices.'],
+      ['Goan Fish Curry', 'Mains', 22, 2, 'gf', 'Gulf grouper in coconut, kokum and tamarind curry.'],
+      ['Palak Paneer', 'Mains', 16, 0, 'v gf', 'Spinach puree, cottage cheese, garlic tadka.'],
+      ['Hyderabadi Chicken Dum Biryani', 'Biryani', 20, 2, 'gf', 'Sealed and slow cooked 3 hours, with raita and mirchi ka salan.'],
+      ['Goat Biryani', 'Biryani', 24, 2, 'gf', 'Bone-in goat, saffron, fried onion, mint.'],
+      ['Vegetable Biryani', 'Biryani', 17, 1, 'vegan gf', 'Seasonal vegetables, whole spices, rose water.'],
+      ['Garlic Naan', 'Breads', 4, 0, 'v', 'Tandoor baked, garlic butter, cilantro.'],
+      ['Laccha Paratha', 'Breads', 5, 0, 'v', 'Flaky layered whole wheat flatbread.'],
+      ['Gulab Jamun', 'Desserts', 7, 0, 'v', 'Warm milk dumplings in cardamom syrup.'],
+      ['Mango Kulfi', 'Desserts', 8, 0, 'v gf off', 'Alphonso mango ice cream. Seasonal, currently unavailable.'],
+      ['Mango Lassi', 'Drinks', 6, 0, 'v gf', 'Yogurt, mango, a pinch of cardamom.'],
+      ['Masala Chai', 'Drinks', 4, 0, 'v gf', 'Assam tea with ginger, cardamom and clove.']
+    ];
+    const SPICE = ['None', 'Mild', 'Medium', 'Hot'];
+    const TAGS = { v: ['v', 'Vegetarian'], vegan: ['v', 'Vegan'], gf: ['gf', 'Gluten-free'], off: ['off', 'Unavailable'] };
+    document.getElementById('menu-body').innerHTML = MENU.map(([name, cat, price, spice, diet, desc]) =>
+      `<tr><td>${name}<span class="desc">${desc}</span></td><td class="cat">${cat}</td><td class="price">$${price}</td><td>${SPICE[spice]}</td>` +
+      `<td>${diet.split(' ').map(t => `<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join('')}</td></tr>`
+    ).join('');
+
+    const today = document.querySelector(`.hours tr[data-day="${new Date().getDay()}"]`);
+    if (today) today.classList.add('today');
+
+    // Sample-question buttons send straight to the Botpress webchat (window.botpress is created by inject.js).
+    const toast = document.getElementById('toast');
+    function say(msg) { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2600); }
+    function bot() { return window.botpress && typeof window.botpress.open === 'function' ? window.botpress : null; }
+    document.querySelectorAll('[data-open-chat]').forEach(b => b.addEventListener('click', () => {
+      bot() ? bot().open() : say('The chat is still loading, try again in a second.');
+    }));
+    document.querySelectorAll('.q').forEach(b => b.addEventListener('click', async () => {
+      const text = b.firstChild.textContent.trim();
+      const bp = bot();
+      if (!bp) return say('The chat is still loading, try again in a second.');
+      bp.open();
+      try { await bp.sendMessage(text); }
+      catch (e) { // ponytail: older webchat builds lack sendMessage; fall back to copy + paste
+        try { await navigator.clipboard.writeText(text); say('Question copied. Paste it into the chat.'); } catch (_) { say(text); }
+      }
+    }));
+  </script>
+
+  <!-- Botpress Webchat (published bot). Replace these two tags with the embed code from Botpress > Webchat > Embed. -->
+  <!-- BOTPRESS_EMBED -->
+</body>
+</html>

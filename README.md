@@ -2,7 +2,7 @@
 
 A Botpress AI chatbot for Tamarind Table, the fictional Hyderabadi restaurant from ISM 6225 Assignment 1, embedded in a single page (`mybot.html`) on GitHub Pages.
 
-**Live page:** https://harshxth.github.io/tamarind-bot/mybot.html
+**Live page:** https://harshithgujjeti.com/tamarind-bot/mybot.html
 
 | File | What it is |
 | --- | --- |

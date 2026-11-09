@@ -297,7 +297,11 @@
       const text = b.firstChild.textContent.trim();
       const bp = bot();
       if (!bp) return say('The chat is still loading, try again in a second.');
-      bp.open();
+      if (bp.state !== 'opened') {
+        bp.open();
+        // ponytail: fixed wait for the conversation to start; messages sent before that are dropped silently
+        await new Promise(r => setTimeout(r, 2000));
+      }
       try { await bp.sendMessage(text); }
       catch (e) { // ponytail: older webchat builds lack sendMessage; fall back to copy + paste
         try { await navigator.clipboard.writeText(text); say('Question copied. Paste it into the chat.'); } catch (_) { say(text); }

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Saffron | Tamarind Table's AI Dining Assistant</title>
-  <meta name="description" content="Saffron is the Botpress AI host for Tamarind Table, a Hyderabadi kitchen in Tampa. Ask it about the menu, diets, spice levels, hours and catering.">
+  <title>Tamarind Table | Ask Saffron, our AI host</title>
+  <meta name="description" content="Tamarind Table is a Hyderabadi kitchen in Seminole Heights, Tampa. Ask Saffron, our AI host, about the menu, diets, spice levels, hours and catering.">
   <meta name="theme-color" content="#0f100e">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e3a540'/%3E%3Cpath d='M32 14c9 6 12 14 9 23-2 6-6 10-9 13-3-3-7-7-9-13-3-9 0-17 9-23z' fill='%2317130a'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://images.unsplash.com">
@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500&display=swap">
   <style>
-    /* Inherits the Tamarind Table world (Assignment 1): evening dining room, one saffron accent,
+    /* Tamarind Table world (Assignment 1): evening dining room, one saffron accent,
        Cormorant for the voice, Outfit for the work. Radius rule: controls are pills, frames and photos 16px. */
     :root {
       --bg: #0f100e; --surface: #161714; --surface-2: #1d1e1a;
@@ -34,54 +34,166 @@
     a:hover { color: var(--accent-hover); }
     b, strong { font-weight: 500; }
     h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.06; margin: 0; letter-spacing: -.012em; text-wrap: balance; }
-    h2 { font-size: clamp(2.2rem, 4.2vw, 3.4rem); }
+    h2 { font-size: clamp(2.3rem, 4.4vw, 3.6rem); }
     h1 em, h2 em { font-style: italic; color: var(--accent); }
     p { margin: 0; }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
-    .wrap { width: min(1200px, 100% - 40px); margin-inline: auto; }
+    .wrap { width: min(1240px, 100% - 48px); margin-inline: auto; }
+    .section { padding: 120px 0; }
+    .lede { margin-top: 18px; color: var(--muted); font-size: 1.12rem; max-width: 54ch; }
     .skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--on-accent); padding: 8px 14px; border-radius: 999px; z-index: 100; }
     .skip:focus { left: 8px; }
 
-    /* Header */
-    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(15, 16, 14, .82); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border-bottom: 1px solid var(--line); }
-    .nav { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 16px; }
-    .brand { display: flex; align-items: baseline; gap: 10px; color: var(--ink); text-decoration: none; }
-    .brand:hover { color: var(--ink); }
-    .brand svg { align-self: center; }
-    .brand b { font: 600 1.55rem/1 var(--serif); }
-    .brand span { font-size: .85rem; color: var(--muted); }
-    .nav ul { list-style: none; display: flex; gap: 2px; margin: 0; padding: 0; }
-    .nav ul a { display: block; padding: 8px 16px; border-radius: 999px; color: var(--muted); text-decoration: none; font-size: .95rem; transition: color .2s, background .2s; }
-    .nav ul a:hover { color: var(--ink); background: rgba(255, 255, 255, .05); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; border: 1px solid transparent; font: 500 .95rem var(--sans); cursor: pointer; text-decoration: none; white-space: nowrap; transition: background .25s var(--ease), border-color .25s var(--ease), color .25s, transform .25s var(--ease); }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: var(--accent-hover); color: var(--on-accent); }
+    .btn-ghost { color: var(--ink); border-color: var(--line-2); background: rgba(15, 16, 14, .35); }
+    .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+    .btn-sm { padding: 9px 18px; font-size: .9rem; }
 
-    /* Hero: the live chat is the first thing on the page */
-    .hero { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--line); }
+    /* Announcement + header */
+    .notice { background: var(--accent); color: var(--on-accent); text-align: center; font-size: .9rem; font-weight: 400; padding: 9px 16px; }
+    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(15, 16, 14, .84); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border-bottom: 1px solid var(--line); }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 70px; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font: 600 1.6rem/1 var(--serif); }
+    .brand:hover { color: var(--ink); }
+    .nav ul { list-style: none; display: flex; gap: 2px; margin: 0; padding: 0; }
+    .nav ul a { display: block; padding: 8px 15px; border-radius: 999px; color: var(--muted); text-decoration: none; font-size: .95rem; transition: color .2s, background .2s; }
+    .nav ul a:hover { color: var(--ink); background: rgba(255, 255, 255, .05); }
+    .nav-end { display: flex; align-items: center; gap: 18px; }
+    .nav-phone { color: var(--ink-2); text-decoration: none; font-size: .95rem; font-variant-numeric: tabular-nums; }
+
+    /* Hero: the restaurant's host, live */
+    .hero { position: relative; isolation: isolate; overflow: hidden; }
     .hero-media { position: absolute; inset: 0; z-index: -2; }
     .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; }
     .hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background:
       linear-gradient(90deg, rgba(15, 16, 14, .94) 0%, rgba(15, 16, 14, .78) 42%, rgba(15, 16, 14, .5) 100%),
-      linear-gradient(0deg, rgba(15, 16, 14, .9) 0%, transparent 40%); }
-    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: clamp(40px, 6vw, 96px); align-items: center; min-height: min(calc(100dvh - 66px), 820px); padding: 56px 0; }
+      linear-gradient(0deg, var(--bg) 0%, transparent 30%); }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: clamp(40px, 6vw, 96px); align-items: center; min-height: min(calc(100dvh - 108px), 800px); padding: 56px 0 72px; }
     .hero h1 { font-size: clamp(3rem, 6.2vw, 5.6rem); line-height: 1; max-width: 11ch; }
-    .hero .lead { margin-top: 24px; font-size: 1.2rem; color: var(--ink-2); max-width: 40ch; }
-    .prompts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; max-width: 560px; }
+    .hero .lead { margin-top: 24px; font-size: 1.2rem; color: var(--ink-2); max-width: 42ch; }
+    .prompts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; max-width: 560px; }
     .prompt { font: 400 .95rem var(--sans); color: var(--ink); background: rgba(15, 16, 14, .55); border: 1px solid var(--line-2); border-radius: 999px; padding: 10px 18px; cursor: pointer; transition: border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease); }
     .prompt:hover { border-color: var(--accent); background: rgba(227, 165, 64, .1); }
     .prompt:active { transform: scale(.97); }
     .prompt:first-child { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
     .prompt:first-child:hover { background: var(--accent-hover); }
-    .hint { margin-top: 18px; font-size: .9rem; color: var(--muted); }
+    .status { margin-top: 30px; font-size: .95rem; color: var(--ink-2); }
+    .status b { color: var(--veg); }
+    .status b.closed { color: var(--heat); }
 
-    .chat { position: relative; height: min(640px, calc(100dvh - 140px)); min-height: 480px; border-radius: var(--radius); overflow: hidden; background: var(--surface); border: 1px solid var(--line-2); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .9), 0 0 0 1px rgba(0, 0, 0, .4); transition: border-color .6s var(--ease); }
+    .chat { position: relative; height: min(640px, calc(100dvh - 160px)); min-height: 480px; border-radius: var(--radius); overflow: hidden; background: var(--surface); border: 1px solid var(--line-2); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .9); transition: border-color .6s var(--ease); }
     .chat.ping { border-color: var(--accent); transition-duration: .1s; }
     .chat-embed { position: absolute; inset: 0; z-index: 1; }
     .chat-wait { position: absolute; inset: 0; display: grid; grid-template-rows: 64px 1fr 72px; }
-    .chat-wait .bar { background: #24221d; }
+    .chat-wait .bar { background: #2a2620; }
     .chat-wait .body { padding: 24px; display: grid; align-content: start; gap: 12px; }
     .chat-wait .sk { height: 44px; width: 72%; border-radius: 14px; background: var(--surface-2); }
     .chat-wait .sk:nth-child(2) { width: 52%; }
     .chat-wait .msg { padding: 0 24px; align-self: center; color: var(--muted); font-size: .92rem; }
     .chat-wait .foot { border-top: 1px solid var(--line); }
+
+    /* Signature dishes: 3 items, 3 cells */
+    .bento { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: auto auto; gap: 24px; margin-top: 48px; }
+    .bento figure { margin: 0; }
+    .bento .big { grid-row: span 2; display: flex; flex-direction: column; }
+    .bento .shot { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 10; background: var(--surface); }
+    .bento .big .shot { aspect-ratio: auto; flex: 1; min-height: 440px; }
+    .bento img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease); }
+    .bento figure:hover img { transform: scale(1.04); }
+    .bento figcaption { display: flex; justify-content: space-between; align-items: start; gap: 16px; padding-top: 16px; }
+    .bento figcaption h3 { font-size: 1.7rem; }
+    .bento figcaption p { margin-top: 4px; color: var(--muted); font-size: .94rem; }
+    .bento .price { font: 600 1.45rem var(--serif); color: var(--accent); font-variant-numeric: lining-nums; }
+    .link-btn { background: none; border: 0; padding: 0; margin-top: 10px; font: 400 .9rem var(--sans); color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+    .link-btn:hover { color: var(--accent-hover); }
+
+    /* Story */
+    .story { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(40px, 7vw, 112px); align-items: center; }
+    .story-media { border-radius: var(--radius); overflow: hidden; aspect-ratio: 4 / 5; }
+    .story-media img { width: 100%; height: 100%; object-fit: cover; }
+    .story-copy p { color: var(--ink-2); font-size: 1.1rem; max-width: 52ch; margin-top: 20px; }
+    .story-copy p + p { color: var(--muted); font-size: 1rem; }
+
+    /* Menu */
+    .menu-head { display: flex; justify-content: space-between; align-items: end; gap: 24px 48px; flex-wrap: wrap; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 8px 18px; font: 400 .92rem var(--sans); cursor: pointer; color: var(--muted); transition: color .2s, border-color .2s, background .2s; }
+    .chip:hover { color: var(--ink); border-color: rgba(238, 236, 230, .4); }
+    .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); font-weight: 500; }
+    .menu { columns: 2 420px; column-gap: 80px; margin-top: 56px; }
+    .group { break-inside: avoid; padding-bottom: 40px; }
+    .group h3 { font-size: 1.9rem; padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+    .dish { display: block; text-align: left; background: none; border: 0; color: inherit; font: inherit; padding: 16px 12px; margin: 0 -12px; width: calc(100% + 24px); border-radius: 12px; cursor: pointer; transition: background .25s var(--ease); }
+    .dish:hover { background: rgba(255, 255, 255, .035); }
+    .dish:hover .ask, .dish:focus-visible .ask { opacity: 1; transform: none; }
+    .dish-top { display: flex; align-items: baseline; gap: 12px; }
+    .dish-top b { font-size: 1.06rem; }
+    .dish-top i { flex: 1; border-bottom: 1px dotted rgba(238, 236, 230, .25); transform: translateY(-4px); }
+    .dish-top .price { font: 600 1.3rem var(--serif); color: var(--accent); font-variant-numeric: lining-nums; }
+    .dish p { margin-top: 4px; color: var(--muted); font-size: .94rem; max-width: 50ch; }
+    .dish-foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .tag { font-size: .74rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--muted); }
+    .tag.veg { color: var(--veg); border-color: rgba(165, 204, 147, .35); }
+    .tag.heat { color: var(--heat); border-color: rgba(239, 138, 111, .35); }
+    .tag.off { color: var(--ink); background: rgba(239, 138, 111, .16); border-color: transparent; }
+    .ask { margin-left: auto; font-size: .82rem; color: var(--accent); opacity: 0; transform: translateX(-6px); transition: opacity .25s var(--ease), transform .25s var(--ease); }
+    .empty { color: var(--muted); padding: 24px 0; }
+    .note { color: var(--muted); font-size: .9rem; }
+
+    /* Catering band */
+    .catering { position: relative; isolation: isolate; overflow: hidden; padding: 140px 0; }
+    .catering-media { position: absolute; inset: 0; z-index: -2; }
+    .catering-media img { width: 100%; height: 100%; object-fit: cover; }
+    .catering::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(15, 16, 14, .95) 0%, rgba(15, 16, 14, .82) 45%, rgba(15, 16, 14, .35) 100%); }
+    .catering h2 { max-width: 12ch; }
+    .trays { display: grid; grid-template-columns: repeat(2, minmax(0, 220px)); gap: 40px; margin-top: 40px; }
+    .trays div { border-top: 1px solid var(--line-2); padding-top: 16px; }
+    .trays b { display: block; font: 600 3rem/1 var(--serif); color: var(--accent); font-variant-numeric: lining-nums; }
+    .trays span { display: block; margin-top: 8px; color: var(--ink-2); }
+    .trays small { display: block; color: var(--muted); font-size: .9rem; }
+    .catering .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 44px; }
+
+    /* Visit */
+    .visit { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+    .visit-media { border-radius: var(--radius); overflow: hidden; height: 100%; min-height: 560px; position: sticky; top: 100px; }
+    .visit-media img { width: 100%; height: 100%; object-fit: cover; }
+    .where { margin-top: 20px; color: var(--ink-2); }
+    .where a { color: var(--ink); }
+    .hours { width: 100%; border-collapse: collapse; margin: 32px 0 48px; font-variant-numeric: tabular-nums; }
+    .hours td { padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .hours td:last-child { text-align: right; color: var(--muted); }
+    .hours tr.today td { color: var(--accent); }
+    .hours tr.today td:first-child::after { content: " (today)"; color: var(--muted); font-size: .85rem; }
+    .faq h3 { font: 500 1.6rem var(--serif); margin-bottom: 8px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq summary { list-style: none; cursor: pointer; padding: 16px 0; font-weight: 400; display: flex; justify-content: space-between; gap: 16px; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; color: var(--accent); font-size: 1.3rem; line-height: 1; transition: transform .3s var(--ease); }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq details p { color: var(--muted); padding: 0 0 18px; max-width: 56ch; }
+
+    /* How Saffron works: quiet close */
+    .built { border-top: 1px solid var(--line); }
+    .built-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; margin-top: 56px; }
+    .built-grid h3 { font: 500 1rem var(--sans); margin-bottom: 10px; }
+    .built-grid p { color: var(--muted); font-size: .96rem; line-height: 1.6; }
+    .built-grid > div { padding-top: 20px; border-top: 1px solid var(--line-2); }
+
+    /* Footer */
+    .site-footer { border-top: 1px solid var(--line); background: #0c0d0b; padding: 72px 0 32px; color: var(--muted); font-size: .94rem; }
+    .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
+    .foot-grid h4 { margin: 0 0 12px; font: 500 .95rem var(--sans); color: var(--ink); }
+    .foot-grid p { line-height: 1.8; }
+    .foot-grid .brand { margin-bottom: 14px; }
+    .foot-grid a { color: var(--ink-2); text-decoration: none; }
+    .foot-grid a:hover { color: var(--accent); }
+    .foot-grid ul { list-style: none; padding: 0; margin: 0; line-height: 2; }
+    .foot-base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); font-size: .85rem; }
+
+    /* One authored entrance: the room settles, the host arrives */
     @media (prefers-reduced-motion: no-preference) {
       .chat-wait .sk { animation: breathe 1.6s ease-in-out infinite alternate; }
       .hero-media img { animation: settle 2.6s var(--ease) both; }
@@ -96,79 +208,38 @@
     @keyframes rise { from { opacity: 0; transform: translateY(20px); } }
     @keyframes lift { from { opacity: 0; transform: translateY(32px); filter: blur(6px); } }
 
-    /* Menu */
-    .section { padding: 112px 0; }
-    .menu-head { display: flex; justify-content: space-between; align-items: end; gap: 24px 48px; flex-wrap: wrap; }
-    .menu-head p { margin-top: 16px; color: var(--muted); font-size: 1.1rem; max-width: 52ch; }
-    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 8px 18px; font: 400 .92rem var(--sans); cursor: pointer; color: var(--muted); transition: color .2s, border-color .2s, background .2s; }
-    .chip:hover { color: var(--ink); border-color: rgba(238, 236, 230, .4); }
-    .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); font-weight: 500; }
-    .menu { columns: 2 420px; column-gap: 80px; margin-top: 56px; }
-    .group { break-inside: avoid; padding-bottom: 40px; }
-    .group[hidden] { display: none; }
-    .group h3 { font-size: 1.9rem; padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
-    .dish { display: block; width: 100%; text-align: left; background: none; border: 0; color: inherit; font: inherit; padding: 16px 12px; margin: 0 -12px; width: calc(100% + 24px); border-radius: 12px; cursor: pointer; transition: background .25s var(--ease); }
-    .dish:hover { background: rgba(255, 255, 255, .035); }
-    .dish:hover .ask { opacity: 1; transform: none; }
-    .dish-top { display: flex; align-items: baseline; gap: 12px; }
-    .dish-top b { font-size: 1.06rem; }
-    .dish-top i { flex: 1; border-bottom: 1px dotted rgba(238, 236, 230, .25); transform: translateY(-4px); }
-    .dish-top .price { font: 600 1.3rem var(--serif); color: var(--accent); font-variant-numeric: lining-nums; }
-    .dish p { margin-top: 4px; color: var(--muted); font-size: .94rem; max-width: 50ch; }
-    .dish-foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-    .tag { font-size: .74rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--muted); }
-    .tag.veg { color: var(--veg); border-color: rgba(165, 204, 147, .35); }
-    .tag.heat { color: var(--heat); border-color: rgba(239, 138, 111, .35); }
-    .tag.off { color: var(--ink); background: rgba(239, 138, 111, .16); border-color: transparent; }
-    .ask { margin-left: auto; font-size: .82rem; color: var(--accent); opacity: 0; transform: translateX(-6px); transition: opacity .25s var(--ease), transform .25s var(--ease); }
-    .dish:focus-visible .ask { opacity: 1; transform: none; }
-    .empty { color: var(--muted); padding: 24px 0; }
-    .note { color: var(--muted); font-size: .9rem; margin-top: 8px; }
-
-    /* Visit */
-    .visit { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(40px, 6vw, 96px); align-items: stretch; }
-    .visit-media { border-radius: var(--radius); overflow: hidden; min-height: 520px; }
-    .visit-media img { width: 100%; height: 100%; object-fit: cover; }
-    .hours { width: 100%; border-collapse: collapse; margin: 32px 0 40px; font-variant-numeric: tabular-nums; }
-    .hours td { padding: 10px 0; border-bottom: 1px solid var(--line); }
-    .hours td:last-child { text-align: right; color: var(--muted); }
-    .hours tr.today td { color: var(--accent); }
-    .hours tr.today td:first-child::after { content: " (today)"; color: var(--muted); font-size: .85rem; }
-    .policies { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 32px; margin: 0; }
-    .policies dt { font-weight: 500; }
-    .policies dd { margin: 4px 0 0; color: var(--muted); font-size: .94rem; line-height: 1.55; }
-
-    /* How it was built: quiet close */
-    .built { border-top: 1px solid var(--line); }
-    .built h2 { max-width: 16ch; }
-    .built-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; margin-top: 56px; }
-    .built-grid h3 { font: 500 1rem var(--sans); color: var(--ink); margin-bottom: 10px; }
-    .built-grid p { color: var(--muted); font-size: .96rem; line-height: 1.6; }
-    .built-grid > div { padding-top: 20px; border-top: 1px solid var(--line-2); }
-    .built-link { margin-top: 56px; color: var(--muted); }
-
-    .site-footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); font-size: .88rem; }
-    .site-footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-
+    @media (max-width: 1080px) {
+      .nav ul { display: none; }
+    }
     @media (max-width: 1000px) {
-      .hero-grid { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 48px 0 40px; gap: 40px; }
+      .hero-grid { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 48px 0 56px; gap: 40px; }
       .chat { height: 72dvh; min-height: 460px; }
-      .visit { grid-template-columns: minmax(0, 1fr); }
-      .visit-media { min-height: 300px; order: -1; }
+      .story, .visit { grid-template-columns: minmax(0, 1fr); }
+      .story-media { aspect-ratio: 16 / 11; }
+      .visit-media { position: static; min-height: 300px; order: -1; }
       .built-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .foot-grid { grid-template-columns: 1fr 1fr; }
+      .catering::after { background: linear-gradient(0deg, rgba(15, 16, 14, .95) 30%, rgba(15, 16, 14, .7) 100%); }
+    }
+    @media (max-width: 760px) {
+      .bento { grid-template-columns: minmax(0, 1fr); }
+      .bento .big { grid-row: auto; }
+      .bento .big .shot { flex: none; min-height: 0; aspect-ratio: 16 / 11; }
     }
     @media (max-width: 640px) {
-      .wrap { width: min(1200px, 100% - 32px); }
-      .nav ul { display: none; }
-      .brand span { display: none; }
+      .wrap { width: min(1240px, 100% - 32px); }
+      .nav-phone { display: none; }
+      .brand { font-size: 1.4rem; }
+      .notice { font-size: .82rem; }
       .hero::after { background: linear-gradient(0deg, var(--bg) 8%, rgba(15, 16, 14, .82) 50%, rgba(15, 16, 14, .6) 100%); }
       .hero .lead { font-size: 1.08rem; }
-      .section { padding: 80px 0; }
+      .section { padding: 88px 0; }
+      .catering { padding: 96px 0; }
+      .trays { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .trays b { font-size: 2.4rem; }
       .menu { columns: 1; }
       .ask { opacity: 1; transform: none; }
-      .policies, .built-grid { grid-template-columns: minmax(0, 1fr); }
-      .built-grid { gap: 28px; }
+      .built-grid, .foot-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -178,19 +249,25 @@
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
+  <p class="notice">Lunch special, Tuesday to Friday until 3 PM: any biryani with a lassi or chai, $15.</p>
   <header class="site-header">
     <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="Saffron, Tamarind Table's dining assistant">
-        <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#e3a540"/><path d="M32 14c9 6 12 14 9 23-2 6-6 10-9 13-3-3-7-7-9-13-3-9 0-17 9-23z" fill="#17130a"/><path d="M32 18v30" stroke="#e3a540" stroke-width="2.5" stroke-linecap="round"/></svg>
-        <b>Saffron</b><span>by Tamarind Table</span>
+      <a class="brand" href="#top">
+        <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#e3a540"/><path d="M32 14c9 6 12 14 9 23-2 6-6 10-9 13-3-3-7-7-9-13-3-9 0-17 9-23z" fill="#17130a"/><path d="M32 18v30" stroke="#e3a540" stroke-width="2.5" stroke-linecap="round"/></svg>
+        Tamarind Table
       </a>
-      <nav aria-label="Sections">
+      <nav aria-label="Main">
         <ul>
           <li><a href="#menu">Menu</a></li>
-          <li><a href="#visit">Hours</a></li>
-          <li><a href="#built">How it works</a></li>
+          <li><a href="#catering">Catering</a></li>
+          <li><a href="#visit">Visit</a></li>
+          <li><a href="#saffron">About Saffron</a></li>
         </ul>
       </nav>
+      <div class="nav-end">
+        <a class="nav-phone" href="tel:+18135550142">(813) 555-0142</a>
+        <a class="btn btn-primary btn-sm" href="tel:+18135550142">Book a table</a>
+      </div>
     </div>
   </header>
 
@@ -206,15 +283,14 @@
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <h1>Ask <em>Saffron</em> what's for dinner.</h1>
-          <p class="lead">Tamarind Table's AI host knows all 18 dishes, every diet flag, our hours and catering, and answers in seconds.</p>
+          <p class="lead">Saffron is our AI host. It knows all 18 dishes, every diet flag, our hours and catering, and answers at any hour.</p>
           <div class="prompts" role="group" aria-label="Send Saffron a question">
             <button class="prompt" type="button">What's vegan?</button>
             <button class="prompt" type="button">Are you open Monday?</button>
-            <button class="prompt" type="button">Catering for 20 people</button>
             <button class="prompt" type="button">Which dishes have nuts?</button>
-            <button class="prompt" type="button">Is the Mango Kulfi available?</button>
+            <button class="prompt" type="button">What should I order first time?</button>
           </div>
-          <p class="hint">Tap a question, or type your own in the chat.</p>
+          <p class="status" id="status">Seminole Heights, Tampa</p>
         </div>
 
         <div class="chat" id="chat" aria-label="Chat with Saffron">
@@ -229,12 +305,57 @@
       </div>
     </section>
 
-    <section class="section" id="menu">
+    <section class="section" id="signatures">
+      <div class="wrap">
+        <h2>The dishes people <em>drive for</em></h2>
+        <div class="bento">
+          <figure class="big">
+            <div class="shot"><img src="https://images.unsplash.com/photo-1676436293945-a613dde9c3b6?auto=format&fit=crop&w=1300&h=1300&q=70" alt="Dum biryani in a copper bowl with raita, salan and sliced vegetables" loading="lazy"></div>
+            <figcaption>
+              <div><h3>Hyderabadi Chicken Dum Biryani</h3><p>Sealed and slow cooked for three hours, with raita and mirchi ka salan.</p>
+                <button class="link-btn" type="button" data-ask="How spicy is the Hyderabadi Chicken Dum Biryani, and can you make it milder?">Ask Saffron how spicy it is</button></div>
+              <span class="price">$20</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <div class="shot"><img src="https://images.unsplash.com/photo-1772730064951-89b427965dbc?auto=format&fit=crop&w=900&h=560&q=70" alt="Butter chicken in a creamy tomato sauce with mint" loading="lazy"></div>
+            <figcaption>
+              <div><h3>Butter Chicken</h3><p>Smoked tandoori chicken in tomato and butter.</p>
+                <button class="link-btn" type="button" data-ask="Does the Butter Chicken have nuts in it?">Ask about allergens</button></div>
+              <span class="price">$19</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <div class="shot"><img src="https://images.unsplash.com/photo-1732519970445-8f2d6998961f?auto=format&fit=crop&w=900&h=560&q=70" alt="Samosas in a paper-lined basket next to a glass of masala chai" loading="lazy"></div>
+            <figcaption>
+              <div><h3>Samosa Chaat</h3><p>Samosa, chickpea curry, tamarind and mint chutneys. Best with a chai.</p>
+                <button class="link-btn" type="button" data-ask="Is the Samosa Chaat vegetarian, and how spicy is it?">Ask if it's vegetarian</button></div>
+              <span class="price">$9</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="wrap story">
+        <div class="story-media">
+          <img src="https://images.unsplash.com/photo-1716816211590-c15a328a5ff0?auto=format&fit=crop&w=1000&h=1250&q=70" alt="Whole spices on a dark table: star anise, cinnamon, chili and turmeric" loading="lazy" width="1000" height="1250">
+        </div>
+        <div class="story-copy">
+          <h2>Cooked the <em>long</em> way</h2>
+          <p>We toast and grind our spice blends every morning. Biryani goes into a sealed pot over low heat for three hours, the way it is done in Hyderabad, so the rice steams in the juices of the meat.</p>
+          <p>Forty seats, one kitchen, and a menu marked for diet and heat on every line, so first-timers and regulars both know what they are ordering.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="menu" style="padding-top:0">
       <div class="wrap">
         <div class="menu-head">
           <div>
-            <h2>The menu Saffron <em>knows</em></h2>
-            <p>Every dish here is in the bot's knowledge base. Tap one and Saffron tells you about it.</p>
+            <h2>The menu</h2>
+            <p class="lede">Every dish is in Saffron's knowledge base. Tap one and Saffron tells you about it.</p>
           </div>
           <div class="filters" role="group" aria-label="Filter by diet">
             <button class="chip" type="button" data-diet="" aria-pressed="true">All</button>
@@ -248,10 +369,29 @@
       </div>
     </section>
 
-    <section class="section" id="visit" style="padding-top:0">
+    <section class="catering" id="catering">
+      <div class="catering-media">
+        <img src="https://images.unsplash.com/photo-1697155406055-2db32d47ca07?auto=format&fit=crop&w=2000&h=1100&q=70" alt="" loading="lazy">
+      </div>
+      <div class="wrap">
+        <h2>Biryani for the <em>whole party.</em></h2>
+        <p class="lede" style="color:var(--ink-2)">Sealed trays of dum biryani for pickup. Give us 48 hours' notice.</p>
+        <div class="trays">
+          <div><b>$65</b><span>Half tray</span><small>Serves 8 to 10</small></div>
+          <div><b>$120</b><span>Full tray</span><small>Serves 18 to 20</small></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-ask="I'm planning a party for 20 people. What catering options do you have?">Plan it with Saffron</button>
+          <a class="btn btn-ghost" href="tel:+18135550142">Call to order</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="visit">
       <div class="wrap visit">
         <div>
           <h2>Open six days, <em>closed Mondays.</em></h2>
+          <p class="where">Seminole Heights, Tampa, FL. Free parking in the lot behind the building.<br><a href="tel:+18135550142">(813) 555-0142</a></p>
           <table class="hours">
             <tr data-day="1"><td>Monday</td><td>Closed</td></tr>
             <tr data-day="2"><td>Tuesday</td><td>11:30 AM to 9:30 PM</td></tr>
@@ -261,39 +401,64 @@
             <tr data-day="6"><td>Saturday</td><td>12:00 PM to 10:30 PM</td></tr>
             <tr data-day="0"><td>Sunday</td><td>12:00 PM to 9:00 PM</td></tr>
           </table>
-          <dl class="policies">
-            <div><dt>Reservations</dt><dd>Walk-ins welcome. Parties of 6 or more, call (813) 555-0142.</dd></div>
-            <div><dt>Catering</dt><dd>Biryani trays: half $65 (serves 8 to 10), full $120 (serves 18 to 20). 48 hours' notice.</dd></div>
-            <div><dt>Lunch special</dt><dd>Tuesday to Friday until 3 PM: any biryani with a lassi or chai, $15.</dd></div>
-            <div><dt>Allergies</dt><dd>Butter Chicken and Rogan Josh contain cashew. Shared kitchen with nuts, gluten and dairy.</dd></div>
-            <div><dt>Kids</dt><dd>Kids' plate for 10 and under, $10.</dd></div>
-            <div><dt>Getting here</dt><dd>Seminole Heights, Tampa. Free lot behind the building.</dd></div>
-          </dl>
+          <div class="faq">
+            <h3>Good to know</h3>
+            <details><summary>Do you take reservations?</summary><p>Walk-ins are welcome. For parties of 6 or more, call ahead at (813) 555-0142 and we will hold a table.</p></details>
+            <details><summary>Takeout and delivery?</summary><p>Call in a pickup order, or order delivery within 5 miles through the major delivery apps.</p></details>
+            <details><summary>Allergies and nuts</summary><p>Butter Chicken and Lamb Rogan Josh sauces contain cashew. Our kitchen handles nuts, gluten and dairy, so for a severe allergy please call before you order.</p></details>
+            <details><summary>Is the meat halal?</summary><p>Yes. All chicken and goat is halal.</p></details>
+            <details><summary>Bringing kids?</summary><p>The kids' plate (Butter Chicken or Chana Masala with rice and naan) is $10 for ages 10 and under.</p></details>
+          </div>
         </div>
         <div class="visit-media">
-          <img src="https://images.unsplash.com/photo-1709548145082-04d0cde481d4?auto=format&fit=crop&w=1100&h=1300&q=70" alt="A dimly lit dining room with set tables" loading="lazy" width="1100" height="1300">
+          <img src="https://images.unsplash.com/photo-1709548145082-04d0cde481d4?auto=format&fit=crop&w=1100&h=1400&q=70" alt="The dining room in the evening, pendant lights over set tables" loading="lazy" width="1100" height="1400">
         </div>
       </div>
     </section>
 
-    <section class="section built" id="built">
+    <section class="section built" id="saffron">
       <div class="wrap">
-        <h2>How Saffron <em>works</em></h2>
+        <h2>About <em>Saffron</em></h2>
+        <p class="lede">Saffron is a Botpress AI chatbot that answers guest questions for Tamarind Table, so staff can stay with the guests in the room during the dinner rush.</p>
         <div class="built-grid">
-          <div><h3>Knowledge base</h3><p>The menu, hours and house policies are one document in the bot's Botpress knowledge base. Every answer comes from it.</p></div>
-          <div><h3>Instructions</h3><p>Warm and brief. Talks only about Tamarind Table, never invents a dish or price, and sends allergy and booking questions to the phone line.</p></div>
-          <div><h3>Testing</h3><p>Diet, spice, hours, catering, sold-out and off-topic questions were checked in the Botpress emulator before publishing.</p></div>
-          <div><h3>Embed</h3><p>Botpress Webchat runs inside this page. The page is plain HTML and CSS, hosted on GitHub Pages.</p></div>
+          <div><h3>What it knows</h3><p>One knowledge-base document: all 18 dishes with prices, spice and diet flags, plus hours, reservations, catering, deals and parking.</p></div>
+          <div><h3>How it behaves</h3><p>Warm and brief. Talks only about Tamarind Table, never invents a dish or price, and sends allergy and booking questions to the phone line.</p></div>
+          <div><h3>How it was tested</h3><p>Diet, spice, hours, catering, sold-out and off-topic questions were checked in the Botpress emulator before publishing.</p></div>
+          <div><h3>Where it runs</h3><p>Botpress Webchat is embedded in this page. The site is plain HTML and CSS on GitHub Pages.</p></div>
         </div>
-        <p class="built-link">The full restaurant site from Assignment 1 is at <a href="https://harshithgujjeti.com/tamarind-table/" rel="noopener">Tamarind Table</a>.</p>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <span>ISM 6225 Assignment 2. Tamarind Table is a fictional restaurant and all data is sample data. Photos from <a href="https://unsplash.com" rel="noopener">Unsplash</a>.</span>
-      <span>Built by <a href="https://github.com/Harshxth" rel="noopener">Harshith Gujjeti</a></span>
+      <div class="foot-grid">
+        <div>
+          <a class="brand" href="#top"><svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#e3a540"/><path d="M32 14c9 6 12 14 9 23-2 6-6 10-9 13-3-3-7-7-9-13-3-9 0-17 9-23z" fill="#17130a"/></svg>Tamarind Table</a>
+          <p>Hyderabadi biryani, curries and tandoor breads in Seminole Heights, Tampa.</p>
+        </div>
+        <div>
+          <h4>Visit</h4>
+          <p>Seminole Heights<br>Tampa, FL<br><a href="tel:+18135550142">(813) 555-0142</a></p>
+        </div>
+        <div>
+          <h4>Hours</h4>
+          <p>Tue to Thu 11:30 to 9:30<br>Fri 11:30 to 10:30<br>Sat 12 to 10:30<br>Sun 12 to 9<br>Mon closed</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#catering">Catering</a></li>
+            <li><a href="#saffron">About Saffron</a></li>
+            <li><a href="https://harshithgujjeti.com/tamarind-table/" rel="noopener">Full restaurant site</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-base">
+        <span>ISM 6225 Assignment 2. Tamarind Table is a fictional restaurant and all data is sample data. Photos from <a href="https://unsplash.com" rel="noopener">Unsplash</a>.</span>
+        <span>Built by <a href="https://github.com/Harshxth" rel="noopener">Harshith Gujjeti</a></span>
+      </div>
     </div>
   </footer>
 
@@ -347,7 +512,23 @@
       render(c.dataset.diet);
     }));
 
-    const today = document.querySelector(`.hours tr[data-day="${new Date().getDay()}"]`);
+    // Open / closed, on Tampa time. HOURS[day] = [open, close] in minutes after midnight; null = closed.
+    const HOURS = [[720, 1260], null, [690, 1290], [690, 1290], [690, 1290], [690, 1350], [720, 1350]];
+    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const fmt = m => { const h = Math.floor(m / 60), mm = String(m % 60).padStart(2, '0'); return `${h % 12 || 12}:${mm} ${h < 12 ? 'AM' : 'PM'}`; };
+    function openStatus(day, min) {
+      const t = HOURS[day];
+      if (t && min >= t[0] && min < t[1]) return [true, `until ${fmt(t[1])} tonight`];
+      if (t && min < t[0]) return [false, `opens today at ${fmt(t[0])}`];
+      for (let i = 1; i <= 7; i++) {
+        const d = (day + i) % 7;
+        if (HOURS[d]) return [false, `opens ${i === 1 ? 'tomorrow' : DAYS[d]} at ${fmt(HOURS[d][0])}`];
+      }
+    }
+    const tampa = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const [isOpen, when] = openStatus(tampa.getDay(), tampa.getHours() * 60 + tampa.getMinutes());
+    document.getElementById('status').innerHTML = `<b class="${isOpen ? '' : 'closed'}">${isOpen ? 'Open now' : 'Closed now'}</b>, ${when}. Seminole Heights, Tampa.`;
+    const today = document.querySelector(`.hours tr[data-day="${tampa.getDay()}"]`);
     if (today) today.classList.add('today');
 
     // Questions go straight into the embedded chat. Messages sent before the conversation is ready are dropped,
@@ -360,12 +541,12 @@
       window.botpress.sendMessage(text).catch(() => {});
     }
     function ask(text) {
-      if (chat.getBoundingClientRect().top < 0 || chat.getBoundingClientRect().bottom > innerHeight) {
-        chat.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      const r = chat.getBoundingClientRect();
+      if (r.top < 0 || r.bottom > innerHeight) chat.scrollIntoView({ behavior: 'smooth', block: 'center' });
       ready ? send(text) : (pending = text);
     }
     document.querySelectorAll('.prompt').forEach(b => b.addEventListener('click', () => ask(b.textContent.trim())));
+    document.querySelectorAll('[data-ask]').forEach(b => b.addEventListener('click', () => ask(b.dataset.ask)));
     list.addEventListener('click', e => {
       const d = e.target.closest('.dish');
       if (d) ask(`Tell me about the ${d.dataset.name}.`);
@@ -389,9 +570,9 @@
           version: 'v2',
           embeddedChatId: 'saffron-chat',
           botName: 'Saffron',
-          botDescription: "Tamarind Table's AI dining assistant. Ask about the menu, spice levels, diets, hours and catering.",
+          botDescription: "Tamarind Table's AI host. Ask about the menu, spice levels, diets, hours and catering.",
           composerPlaceholder: 'Ask Saffron about dinner...',
-          color: '#B8731C',
+          color: '#E3A540',
           variant: 'solid',
           headerVariant: 'solid',
           themeMode: 'dark',
